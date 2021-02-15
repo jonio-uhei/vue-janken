@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Vueで作ったじゃんけん</title>
+    </head>
+    <body>
+        <div id="app">
+            <div class="wrap">
+                <h2>じゃんけん</h2>
+                <p>{{turn}}回目のじゃんけん</p>
+                <div>
+                    <p>
+                        結果:<span :class="{active:winColor,inactive:loseColor,safe:drawColor}">{{result}}</span>
+                    </p>
+                  <p>勝ち数:{{win}}</p>
+                  <p>負け数:{{lose}}</p>
+                  <p>引き分け数:{{draw}}</p>
+                </div>
+                <div>
+                  <p>相手の手は:{{enemyHand}}</p>
+                </div>
+                <button @click="fight('ぐー')">ぐー</button>
+                <button @click="fight('ちょき')">ちょき</button>
+                <button @click="fight('ぱー')">ぱー</button>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data:{
+                    result:'',
+                    win:0,
+                    lose:0,
+                    draw:0,
+                    enemyHand:'',
+                    turn:0,
+                    handArray:['ぐー','ちょき','ぱー'],
+                    winColor:true,
+                    loseColor:false,
+                    drawColor:false
+                },
+                methods:{
+                    fight:function(myHand){
+                        const number = Math.floor(Math.random()*this.handArray.length);
+                        this.enemyHand = this.handArray[number];
+                        if(myHand === 'ぐー' && this.enemyHand === 'ちょき' || myHand === 'ちょき' && this.enemyHand === 'ぱー' || myHand === 'ぱー'&&this.enemyHand === 'ぐー'){
+                            this.win++;
+                            this.result = '勝ち'
+                            this.winColor = true;
+                            this.loseColor = false;
+                            this.drawColor = false;
+                        }
+                        else if(myHand === 'ぐー' && this.enemyHand === 'ぱー' || myHand === 'ちょき' && this.enemyHand === 'ぐー' || myHand === 'ぱー'&&this.enemyHand === 'ちょき'){
+                            this.lose++;
+                            this.result = '負け';
+                            this.loseColor = true;
+                            this.winColor = false;
+                            this.drawColor = false;
+                        }
+                        else{
+                            this.draw++;
+                            this.result = 'ひきわけ';
+                            this.drawColor = true;
+                            this.winColor = false;
+                            this.loseColor = false;
+                        }
+                        this.turn++;
+                    }
+                },
+                computed:{
+                    multiClass(){
+                        return{
+                            active:this.winColor,
+                            inactive:this.loseColor,
+                            safe:this.drawColor
+                        }
+                    }
+
+                }
+            })
+        </script>
+        <style>
+            h2{
+                text-align: center;
+                font-size: 20px;
+            }
+            .wrap{
+                width: 300px;
+                margin:0 auto;
+            }
+            .active{
+                color:blue;
+            }
+            .inactive{
+                color:red;
+            }
+            .safe{
+                color:black;
+            }
+        </style>
+    </body>
+</html>
